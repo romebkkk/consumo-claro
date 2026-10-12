@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consumo Claro · ¿Puedo devolverlo? ¿Sigue en garantía?</title>
+<meta name="description" content="Comprueba gratis si estás en plazo de devolución (14 días en compras online) o de garantía (3 años) y genera la carta de reclamación al vendedor.">
+<link rel="stylesheet" href="style.css"><style>:root{--accent:#fbbf24}</style></head><body><div class="wrap">
+<header><div class="logo">🛍️ Consumo <b>Claro</b></div><p>¿Te ha llegado mal un pedido o se ha roto algo? Mira tus derechos y reclama en 2 minutos.</p>
+<span class="tag">Ley de Consumidores (RDL 1/2007) · gratis</span></header>
+<div class="card"><h3 style="margin-top:0">↩️ Devolución sin motivo (compras online o a distancia)</h3>
+ <div class="g2"><div><label>¿Cuándo lo recibiste?</label><input id="rec" type="date"></div><div><label>¿Te informaron del derecho de desistimiento?</label><select id="inf"><option value="1">Sí</option><option value="0">No / no lo sé</option></select></div></div>
+ <button class="btn" id="b1">Comprobar plazo</button><div id="r1"></div></div>
+<div class="card"><h3 style="margin-top:0">🛡️ Garantía legal</h3>
+ <div class="g2"><div><label>Fecha de compra</label><input id="com" type="date"></div><div><label>Tipo de producto</label><select id="tipo"><option value="nuevo">Nuevo</option><option value="segunda_mano">Segunda mano</option><option value="digital">Contenido o servicio digital</option></select></div></div>
+ <button class="btn" id="b2">Comprobar garantía</button><div id="r2"></div></div>
+<div class="card"><h3 style="margin-top:0">✉️ Carta de reclamación</h3>
+ <label>Tipo</label><select id="ct"><option value="desistimiento">Devolución (desistimiento)</option><option value="garantia">Producto defectuoso (garantía)</option></select>
+ <div class="g2"><div><label>Tu nombre</label><input id="nom"></div><div><label>Email / teléfono</label><input id="con"></div><div><label>Vendedor</label><input id="ven"></div><div><label>Producto</label><input id="pro"></div><div><label>Nº de pedido</label><input id="ped"></div><div><label>Defecto (si es garantía)</label><input id="def"></div></div>
+ <button class="btn" id="b3">Generar carta</button><pre class="doc" id="carta" style="display:none"></pre><button class="btn sec" id="cp" style="display:none">📋 Copiar</button></div>
+<div class="note">Orientativo. Si el vendedor no responde, puedes pedir la hoja de reclamaciones o reclamar gratis en la oficina de Consumo de tu comunidad autónoma.</div>
+<footer>Código abierto · <a href="https://github.com/romebkkk/consumo-claro" target="_blank">GitHub</a> · Hecho con ❤️ por <a href="https://dataflowelegance.es" target="_blank">DataFlow Elegance</a></footer></div>
+<script src="consumo.js"></script><script>
+var $=function(s){return document.querySelector(s)},C=ConsumoClaro,hoy=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);$("#rec").value=hoy;$("#com").value=hoy;
+function fmt(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"})}
+$("#b1").onclick=function(){var r=C.desistimiento($("#rec").value,$("#inf").value==="1",hoy);
+ $("#r1").innerHTML=r.en_plazo?'<p class="ok">✅ Estás en plazo hasta el <b>'+fmt(r.fin)+'</b> ('+r.dias_restantes+' días). Puedes devolverlo sin dar explicaciones y deben reembolsarte en 14 días.'+(r.ampliado?' Como no te informaron, el plazo se amplía 12 meses.':'')+'</p>':'<p class="warn">⏰ El plazo de devolución terminó el '+fmt(r.fin)+'. Si el producto tiene un defecto, aún puedes usar la garantía.</p>'};
+$("#b2").onclick=function(){var r=C.garantia($("#com").value,$("#tipo").value,hoy);
+ $("#r2").innerHTML=(r.vigente?'<p class="ok">✅ En garantía hasta el <b>'+fmt(r.fin)+'</b> ('+r.anos+' años).</p>':'<p class="warn">La garantía legal terminó el '+fmt(r.fin)+'.</p>')+'<p style="color:var(--mut)">'+r.presuncion+' Tienes derecho a reparación o sustitución gratis; si no es posible, a rebaja o devolución del dinero.</p>'};
+$("#b3").onclick=function(){$("#carta").textContent=C.carta($("#ct").value,{nombre:$("#nom").value,contacto:$("#con").value,vendedor:$("#ven").value,producto:$("#pro").value,pedido:$("#ped").value,defecto:$("#def").value,recepcion:$("#rec").value,compra:$("#com").value});$("#carta").style.display="";$("#cp").style.display=""};
+$("#cp").onclick=function(){navigator.clipboard.writeText($("#carta").textContent);$("#cp").textContent="✅ Copiada"};
+</script></body></html>
